@@ -10,12 +10,22 @@ circular_buffer :: circular_buffer()
 	write = 0;
 }
 
-void circular_buffer::push(string s)
+int circular_buffer::push(string s)
 {
+	int overflow;
+
 	if(state == full)
 	{
-		printf("UWAGA! NADPISANIE komorki nr %d , element nadpisany to: ", write);
-		cout<<str[read]<<endl;
+		warning += "UWAGA! NADPISANIE komorki nr ";
+		warning += write + 48;
+		warning += " , element nadpisany to: ";
+		warning += str[read];
+		warning += "\n";
+
+		str[read].clear();
+
+		overflow = 1;
+
 		if(read == SIZE-1) read = 0;
 		else read++;
 	}
@@ -27,18 +37,18 @@ void circular_buffer::push(string s)
 
 	if(write == read) state = full;
 	else state = partly;
+
+	return overflow;
 }
 
 string circular_buffer::peak() const
 {
 	if(state == empty)
 	{
-		printf("PUSTY BUFOR \n");
 		return "";
 	}
 	else
 	{
-		printf("Pierwszy element w buforze to:\n");
 		return str[read];
 	}
 }
@@ -49,7 +59,6 @@ string circular_buffer::pop()
 
 	if(state == empty)
 	{
-		printf("PUSTY BUFOR\n");
 		return "";
 	}
 	else
@@ -63,50 +72,37 @@ string circular_buffer::pop()
 		if(state == full) state = partly;
 		else if(state == partly && read == write) state = empty;
 
-		printf("Zdjety element to: ");
 		return temp;
 	}
 }
 
-
-void circular_buffer::remove(int i)
+string circular_buffer::remove(int i)
 {
+	string s;
+
 	if(state == empty)
 	{
-		printf("BUFOR PUSTY\n");
+		return "";
 	}
 	
-	while((i < 1 || i > SIZE) && state != empty)
-	{
-		printf("PODANO ZLA ILOSC\n");
-		printf("PODAJ POPRAWNA WARTOSC\n");
-		scanf("%d", &i);
-	}
-
 	while(state != empty && i > 0)
 	{
-		cout<<str[read]<<endl;
-		str[read].clear();
-
-		if(read == SIZE-1) read = 0;
-		else read++;
-
+		s += pop();
+		s += "\n";
 		i--;
-
-		if(state == full) state = partly;
-		else if(state == partly && read == write) state = empty;
 	}
+
+	return s;
 }
 
-void circular_buffer::clr()
+int circular_buffer::clr()
 {
 	if(state == empty)
 	{
-		printf("BUFOR PUSTY\n");
+		return 1;
 	}
 	else
 	{
-		printf("Bufor wyczyszczony");
 		for(int i = 1; i < SIZE; i++)
 		{
 			str[i].clear();
@@ -115,21 +111,33 @@ void circular_buffer::clr()
 		read = 0;
 		write = 0;
 		state = empty;
+
+		return 0;
 	}
 }
 
 const int circular_buffer::count() const
 {
-	printf("Aktualna ilosc elementow w buforze to ");
-
-	if(write >= read && state != empty) return (write - read);
+	if(write > read && state != empty) return (write - read);
 	else if(state == full) return SIZE;
+	else if(state == empty) return 0;
 	else return SIZE - abs(write-read);
 }
 
-ostream& operator<< (ostream& out, circular_buffer const& buffer)
+string circular_buffer::get_error()
+{
+	string tmp;
+
+	tmp = warning;
+	warning.clear();
+
+	return tmp;
+}
+
+ostream& operator << (ostream& out, circular_buffer const& buffer)
 {
 	int r, w, stan;
+
 	r = buffer.read;
 	w = buffer.write;
 	stan = buffer.state;
@@ -140,13 +148,14 @@ ostream& operator<< (ostream& out, circular_buffer const& buffer)
 	}
 	else
 	{
-		out<<"Zawartosc bufora:"<<endl;
+		out<<"\nZawartosc bufora:"<<endl;
 	}
 
 	while(stan != 0)
 	{
 
 		out<<buffer.str[r]<<endl;
+
 		if(r == buffer.SIZE-1) r = 0;
 		else r++;
 
@@ -156,12 +165,13 @@ ostream& operator<< (ostream& out, circular_buffer const& buffer)
 	return out;
 }
 
-istream &operator>> (istream & in, circular_buffer & buffer)
+istream &operator >> (istream & in, circular_buffer & buffer)
 {
 	string s;
 	string tmp;
 
 	getline(in, s);
+
 	for(int i = 0; i < s.size(); i++)
 	{
 		if(s[i] == 32)
@@ -177,10 +187,31 @@ istream &operator>> (istream & in, circular_buffer & buffer)
 			tmp += s[i];
 		}
 	}
+
 	if(tmp.size() != 0)
 	{
 		buffer.push(tmp);
 		tmp.clear();
 	}
+
 	return in;
+}
+
+circular_buffer & operator += (circular_buffer & left, const circular_buffer & right)
+{
+	int var = right.count();
+	int r = right.read;
+	int size = right.SIZE;
+	string tmp;
+
+	for(int i = 1; i <= var; i++)
+	{
+		tmp = right.str[r];
+		left.push(tmp);
+
+		if(r == size-1) r = 0;
+		else r++;
+	}
+
+	return left;
 }

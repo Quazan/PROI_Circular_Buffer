@@ -8,6 +8,7 @@ using namespace std;
 int main()
 {
 	circular_buffer bufor;
+	circular_buffer pomoc;
 	string s;
 	string tmp;
 	char c = 0;
@@ -22,12 +23,13 @@ int main()
 		printf("[4] Zobacz wszystkie elmenty\n");
 		printf("[5] Wyczysc\n");
 		printf("[6] Policz\n");
-		printf("[7] Zdejmij podana liczbe elementow\n\n");
+		printf("[7] Zdejmij podana liczbe elementow\n");
+		printf("[8] Polacz dwa bufory\n\n");
 		printf("[0] Zakoncz\n\n");
 
 		
 		cin>>z;
-		if(z < 0 || z > 7)
+		if(z < 0 || z > 8)
 		{
 			printf("BLAD WPROWADZANIA DANYCH\n");
 			continue;
@@ -46,15 +48,35 @@ int main()
 		{
 			case 1:
 				printf("Mozesz wpisac kilka elementow oddzielajac je spacja.\n");
+
 				cin>>bufor;
+				cout<<bufor.get_error();
 				break;
 
 			case 2:
-				cout<<bufor.pop();
+				tmp = bufor.pop();
+
+				if(tmp.size() == 0)
+				{
+					printf("BUFOR PUSTY\n");
+				}
+				else
+				{
+					cout<<tmp;
+				}
 				break;
 
 			case 3:
-				cout<<bufor.peak();
+				tmp = bufor.peak();
+
+				if(tmp.size() == 0)
+				{
+					printf("BUFOR PUSTY\n");
+				}
+				else
+				{
+					cout<<tmp;
+				}
 				break;
 
 			case 4:
@@ -62,17 +84,53 @@ int main()
 				break;
 
 			case 5:
-				bufor.clr();
+				if(bufor.clr())
+				{
+					printf("BUFOR PUSTY\n");
+				}
+				else
+				{
+					printf("BUFOR WYCZYSZCZONY\n");
+				}
 				break;
 
 			case 6:
+				printf("Aktualna ilosc elementow w buforze to ");
 				cout<<bufor.count();
 				break;
 
 			case 7:
 				printf("Podaj liczbe elementow do zdjecia:");
 				scanf("%d", &a);
-				bufor.remove(a);
+
+				while(a < 1)
+				{
+					printf("PODANO ZLA ILOSC\n");
+					printf("PODAJ POPRAWNA WARTOSC\n");
+					scanf("%d", &a);
+				}
+
+				tmp = bufor.remove(a);
+
+				if(tmp.size() != 0)
+				{
+					cout<<tmp;
+				}
+				else
+				{
+					printf("BUFOR PUSTY\n");
+				}
+				break;
+
+			case 8:
+				printf("Wpisz elementy do drugiego bufora: \n");
+
+				cin>>pomoc;
+				bufor+=pomoc;
+				pomoc.clr();
+				
+				cout<<bufor;
+				cout<<bufor.get_error();
 				break;
 
 			case 0:

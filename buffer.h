@@ -6,7 +6,7 @@ class circular_buffer //bufor cykliczny
 {
 private:
 
-	const static int SIZE = 4; //rozmiar bufora
+	const static int SIZE = 10; //rozmiar bufora
 	string str[SIZE];	//tablica stringow przechowujaca elementy bufora
 
 	enum fill
@@ -31,9 +31,12 @@ public:
 	const int count() const;	//liczy ile aktualnie jest elementow w buforze
 	friend ostream& operator << (ostream&, const circular_buffer &);	//wypisuje cala zawartosc bufora i resetuje jego go do pierwotnej postaci
 	friend istream& operator >> (istream&, circular_buffer &);	//wczytuje cala linie elementow oddzielonych spacjami
-	friend circular_buffer & operator +=(  circular_buffer &, const circular_buffer &); //wrzuca elementy z jednego bufora do drugiego
+	friend circular_buffer & operator +=( circular_buffer &, const circular_buffer &); //dodaje elementy z jednego bufora do drugiego
+	friend circular_buffer & operator +=(circular_buffer &, const string &); //dodaje string do bufora (space oddzielaja kolejne elementy)
 };
 
 ostream &operator << (ostream & out, circular_buffer const& buffer);
 istream &operator >> (istream & in, circular_buffer & buffer);
 circular_buffer & operator +=( circular_buffer &,  const circular_buffer & );
+circular_buffer & operator +=(circular_buffer &, const string &);
+

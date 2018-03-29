@@ -24,12 +24,13 @@ int main()
 		printf("[5] Wyczysc\n");
 		printf("[6] Policz\n");
 		printf("[7] Zdejmij podana liczbe elementow\n");
-		printf("[8] Polacz dwa bufory\n\n");
+		printf("[8] Polacz dwa bufory\n");
+		printf("[9] Przekaż elementy jednego buforu do drugiego\n\n");
 		printf("[0] Zakoncz\n\n");
 
 		
 		cin>>z;
-		if(z < 0 || z > 8)
+		if(z < 0 || z > 9)
 		{
 			printf("BLAD WPROWADZANIA DANYCH\n");
 			continue;
@@ -49,7 +50,8 @@ int main()
 			case 1:
 				printf("Mozesz wpisac kilka elementow oddzielajac je spacja.\n");
 
-				cin>>bufor;
+				getline(cin, s);
+				bufor += s;
 				cout<<bufor.get_error();
 				break;
 
@@ -133,6 +135,17 @@ int main()
 				cout<<bufor.get_error();
 				break;
 
+			case 9:
+				printf("Wpisz elementy do drugiego bufora: \n");
+
+				cin>>pomoc;
+				bufor = pomoc;
+				pomoc.clr();
+				
+				cout<<bufor;
+				cout<<bufor.get_error();
+
+				break;
 			case 0:
 				return 0;
 				break;

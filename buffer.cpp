@@ -216,28 +216,6 @@ circular_buffer & operator += (circular_buffer & left, const circular_buffer & r
 	return left;
 }
 
-/*circular_buffer & operator =  (circular_buffer & left, const circular_buffer & right)
-{
-	int var = right.count();
-	int r = right.read;
-	int size = right.SIZE;
-	string tmp;
-
-	left.clr();
-
-	for(int i = 1; i <= var; i++)
-	{
-		tmp = right.str[r];
-		left.push(tmp);
-
-		if(r == size-1) r = 0;
-		else r++;
-	}
-
-	return left;
-
-*/
-
 circular_buffer & operator +=(circular_buffer & buffer, const string & s)
 {
 	string tmp;

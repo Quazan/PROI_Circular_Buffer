@@ -1,6 +1,4 @@
 #include "buffer.h"
-#include <iostream>
-#include <string>
 using namespace std;
 
 circular_buffer :: circular_buffer()
@@ -174,7 +172,7 @@ istream &operator >> (istream & in, circular_buffer & buffer)
 
 	for(int i = 0; i < s.size(); i++)
 	{
-		if(s[i] == 32)
+		if(s[i] == ' ')
 		{
 			if(tmp.size() != 0)
 			{
